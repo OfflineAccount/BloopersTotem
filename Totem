@@ -1,0 +1,60 @@
+/*    */ package me.bloopers.blooptotem;
+/*    */ 
+/*    */ import java.util.ArrayList;
+/*    */ import org.bukkit.Location;
+/*    */ import org.bukkit.Material;
+/*    */ import org.bukkit.block.Block;
+/*    */ import org.bukkit.block.BlockFace;
+/*    */ 
+/*    */ public class Totem
+/*    */ {
+/*    */   public static boolean isCreated;
+/*    */   public static Location location;
+/* 14 */   public static ArrayList<Location> totemblocks = new ArrayList();
+/*    */   public static String currentfac;
+/*    */ 
+/*    */   public static void create()
+/*    */   {
+/* 19 */     isCreated = true;
+/* 20 */     Location tmp = location;
+/*    */ 
+/* 22 */     Block tmpb = tmp.getBlock();
+/* 23 */     int a = 0;
+/* 24 */     while (a != 5) {
+/* 25 */       tmpb.setType(Material.QUARTZ_BLOCK);
+/* 26 */       totemblocks.add(tmpb.getLocation());
+/* 27 */       tmpb = tmpb.getRelative(BlockFace.UP);
+/* 28 */       a++;
+/*    */     }
+/*    */   }
+/*    */ 
+/*    */   public static void delete()
+/*    */   {
+/* 34 */     isCreated = false;
+/* 35 */     Location tmp = location;
+/*    */ 
+/* 37 */     Block tmpb = tmp.getBlock();
+/* 38 */     int a = 0;
+/* 39 */     while (a != 5) {
+/* 40 */       tmpb.setType(Material.AIR);
+/* 41 */       totemblocks.add(tmpb.getLocation());
+/* 42 */       tmpb = tmpb.getRelative(BlockFace.UP);
+/* 43 */       a++;
+/* 44 */     }currentfac = " ";
+/* 45 */     totemblocks.clear();
+/*    */   }
+/*    */ 
+/*    */   public static void cancel()
+/*    */   {
+/* 50 */     isCreated = false;
+/* 51 */     Task.countdown = false;
+/*    */   }
+/*    */   public static void destroy() {
+/* 54 */     isCreated = false;
+/* 55 */     for (Location loc : totemblocks) {
+/* 56 */       loc.getBlock().setType(Material.AIR);
+/*    */     }
+/* 58 */     currentfac = " ";
+/* 59 */     totemblocks.clear();
+/*    */   }
+/*    */ }
