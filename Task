@@ -1,0 +1,66 @@
+/*    */ package me.bloopers.blooptotem;
+/*    */ 
+/*    */ import java.io.PrintStream;
+/*    */ import org.bukkit.Bukkit;
+/*    */ import org.bukkit.scheduler.BukkitScheduler;
+/*    */ 
+/*    */ public class Task
+/*    */ {
+/*    */   public static int a;
+/* 10 */   public static boolean countdown = false;
+/*    */ 
+/* 12 */   public static void Initialize() { a = Bukkit.getScheduler().scheduleSyncDelayedTask(BloopersTotem.getInstance(), new Runnable()
+/*    */     {
+/*    */       public void run() {
+/* 15 */         if (!Totem.isCreated)
+/* 16 */           Task.startCountdown();
+/*    */         else
+/* 18 */           System.out.println("BloopersTotem: The totem was already created and couldn't be generated twice");
+/*    */       }
+/*    */     }
+/*    */     , 144000L); }
+/*    */ 
+/*    */   public static void startCountdown() {
+/* 24 */     countdown = true;
+/* 25 */     Bukkit.getScheduler().scheduleSyncRepeatingTask(BloopersTotem.getInstance(), new Runnable() {
+/* 26 */       private int a = 300;
+/*    */ 
+/*    */       public void run() {
+/* 29 */         switch (this.a) { case 300:
+/* 30 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §6Apparition du totem §4§l/warp totem §6dans §b§l5 minutes §6!"); break;
+/*    */         case 240:
+/* 32 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §6Apparition du totem §4/warp totem §6dans §b§l4 minutes §6!"); break;
+/*    */         case 180:
+/* 34 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §6Apparition du totem §4/warp totem §6dans §b§l3 minutes §6!"); break;
+/*    */         case 120:
+/* 36 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §6Apparition du totem §4/warp totem §6dans §b§l2 minutes §6!"); break;
+/*    */         case 60:
+/* 38 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §6Apparition du totem §4/warp totem §6dans §b§l1 minutes §6!"); break;
+/*    */         case 30:
+/* 40 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §6Apparition du totem §4/warp totem §6dans §b§l30 secondes §6!"); break;
+/*    */         case 10:
+/* 42 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §6Apparition du totem §4/warp totem §6dans §b§l10 secondes §6!"); break;
+/*    */         case 5:
+/* 44 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §6Apparition du totem §4/warp totem §6dans §b§l5 secondes §6!"); break;
+/*    */         case 4:
+/* 46 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §6Apparition du totem §4/warp totem §6dans §b§l4 secondes §6!"); break;
+/*    */         case 3:
+/* 48 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §6Apparition du totem §4/warp totem §6dans §b§l3 secondes §6!"); break;
+/*    */         case 2:
+/* 50 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §6Apparition du totem §4/warp totem §6dans §b§l2 secondes §6!"); break;
+/*    */         case 1:
+/* 52 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §6Apparition du totem §4/warp totem §6dans §b§l1 seconde §6!"); break;
+/*    */         case 0:
+/* 54 */           Bukkit.broadcastMessage("§9§l--------------------------------");
+/* 55 */           Totem.create(); Bukkit.broadcastMessage("§f[§cTOTEM§f] §6§lLe totem §4§l/warp totem §6§lest généré ! Que le combat commence !");
+/* 56 */           Bukkit.broadcastMessage("§9§l--------------------------------");
+/*    */         }
+/* 58 */         this.a -= 1;
+/*    */ 
+/* 60 */         if (this.a < 0)
+/* 61 */           Task.countdown = false;
+/*    */       }
+/*    */     }
+/*    */     , 20L, 20L);
+/*    */   }
+/*    */ }
