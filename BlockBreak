@@ -1,0 +1,113 @@
+/*    */ package me.bloopers.blooptotem;
+/*    */ 
+/*    */ import com.massivecraft.factions.entity.Faction;
+/*    */ import com.massivecraft.factions.entity.MPlayer;
+/*    */ import java.io.IOException;
+/*    */ import java.util.ArrayList;
+/*    */ import org.bukkit.Bukkit;
+/*    */ import org.bukkit.Color;
+/*    */ import org.bukkit.FireworkEffect;
+/*    */ import org.bukkit.FireworkEffect.Builder;
+/*    */ import org.bukkit.FireworkEffect.Type;
+/*    */ import org.bukkit.Material;
+/*    */ import org.bukkit.World;
+/*    */ import org.bukkit.block.Block;
+/*    */ import org.bukkit.configuration.file.FileConfiguration;
+/*    */ import org.bukkit.entity.Firework;
+/*    */ import org.bukkit.entity.Player;
+/*    */ import org.bukkit.event.EventHandler;
+/*    */ import org.bukkit.event.EventPriority;
+/*    */ import org.bukkit.event.Listener;
+/*    */ import org.bukkit.event.block.BlockBreakEvent;
+/*    */ import org.bukkit.inventory.ItemStack;
+/*    */ import org.bukkit.inventory.meta.FireworkMeta;
+/*    */ 
+/*    */ public class BlockBreak
+/*    */   implements Listener
+/*    */ {
+/*    */   @EventHandler(priority=EventPriority.HIGHEST)
+/*    */   public void BBreak(BlockBreakEvent event)
+/*    */   {
+/* 27 */     Player p = event.getPlayer();
+/* 28 */     Block breakedb = event.getBlock();
+/* 29 */     MPlayer fp = MPlayer.get(p);
+/* 30 */     String fname = fp.getFaction().getName();
+/*    */ 
+/* 32 */     if (Totem.totemblocks.contains(breakedb.getLocation()))
+/*    */     {
+/* 34 */       if (p.getItemInHand().getType().equals(Material.DIAMOND_SWORD))
+/*    */       {
+/* 36 */         Totem.totemblocks.remove(breakedb.getLocation());
+/*    */ 
+/* 38 */         if (Totem.totemblocks.size() == 4) {
+/* 39 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §7Le joueur §b" + p.getName() + "§7 de la faction §2" + fname + " §7débute la destruction du totem §3" + "(plus que " + Totem.totemblocks.size() + " blocs)");
+/* 40 */           Totem.currentfac = fname;
+/* 41 */           event.setCancelled(false);
+/* 42 */           breakedb.setType(Material.AIR);
+/*    */         }
+/* 44 */         else if (Totem.currentfac == fname) {
+/* 45 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §7Le joueur §b" + p.getName() + "§7 de la faction §2" + fname + " §7casse un bloc du totem §3" + "(plus que " + Totem.totemblocks.size() + " blocs)");
+/* 46 */           event.setCancelled(false);
+/* 47 */           breakedb.setType(Material.AIR);
+/*    */         }
+/*    */         else
+/*    */         {
+/* 51 */           Bukkit.broadcastMessage("§f[§cTOTEM§f] §cLe joueur §b" + p.getName() + "§c de la faction §2" + fname + " §cbloque la §2" + Totem.currentfac);
+/* 52 */           Totem.destroy();
+/* 53 */           Totem.create();
+/* 54 */           event.setCancelled(true);
+/* 55 */           Firework f = (Firework)event.getPlayer().getWorld().spawn(event.getPlayer().getLocation(), Firework.class);
+/* 56 */           FireworkMeta fm = f.getFireworkMeta();
+/* 57 */           fm.addEffect(FireworkEffect.builder()
+/* 58 */             .flicker(false)
+/* 59 */             .trail(true)
+/* 60 */             .with(FireworkEffect.Type.STAR)
+/* 61 */             .withColor(Color.RED)
+/* 62 */             .withFade(Color.BLUE)
+/* 63 */             .build());
+/* 64 */           fm.setPower(0);
+/* 65 */           f.setFireworkMeta(fm);
+/*    */         }
+/*    */ 
+/* 69 */         if (Totem.totemblocks.isEmpty())
+/*    */         {
+/* 71 */           Firework f = (Firework)event.getPlayer().getWorld().spawn(event.getPlayer().getLocation(), Firework.class);
+/* 72 */           FireworkMeta fm = f.getFireworkMeta();
+/* 73 */           fm.addEffect(FireworkEffect.builder()
+/* 74 */             .flicker(false)
+/* 75 */             .trail(true)
+/* 76 */             .with(FireworkEffect.Type.BALL_LARGE)
+/* 77 */             .withColor(Color.GREEN)
+/* 78 */             .withFade(Color.ORANGE)
+/* 79 */             .build());
+/* 80 */           fm.setPower(0);
+/* 81 */           f.setFireworkMeta(fm);
+/*    */ 
+/* 83 */           Bukkit.broadcastMessage("§6-------------------------------");
+/* 84 */           Bukkit.broadcastMessage("§aLa faction §5§l" + fname + " §aa remporté le totem !");
+/* 85 */           Totem.destroy();
+/* 86 */           int current = 0;
+/* 87 */           if (BloopersTotem.getStats().contains(fname)) {
+/* 88 */             current = BloopersTotem.getStats().getInt(fname);
+/*    */           }
+/* 90 */           current++;
+/* 91 */           BloopersTotem.getStats().set(fname, Integer.valueOf(current));
+/* 92 */           Bukkit.broadcastMessage("");
+/* 93 */           Bukkit.broadcastMessage("§aIls ont déjà gagné §5§l" + current + " §5§ltotem(s) §a!");
+/* 94 */           Bukkit.broadcastMessage("§6-------------------------------");
+/* 95 */           Bukkit.broadcastMessage("");
+/* 96 */           Bukkit.broadcastMessage("§6§k!!!!! §aProchain TOTEM dans §b§l2 heures §6§k!!!!!");
+/*    */           try {
+/* 98 */             BloopersTotem.getStats().save(BloopersTotem.filestats);
+/*    */           } catch (IOException e) {
+/* 100 */             e.printStackTrace();
+/*    */           }
+/* 102 */           Task.Initialize();
+/*    */         }
+/*    */       } else {
+/* 105 */         event.setCancelled(true);
+/* 106 */         p.sendMessage("§4[§bTOTEM§4] §cVous devez casser le totem avec une épée en diamant !");
+/*    */       }
+/*    */     }
+/*    */   }
+/*    */ }
