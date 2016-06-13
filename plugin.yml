@@ -1,0 +1,8 @@
+name: BloopersTotem
+main: me.bloopers.blooptotem.BloopersTotem
+version: 2.0
+description: Un plugin de maxouland
+author: maxouland
+commands:
+ totem:
+  description: BloopersTotem commandes
