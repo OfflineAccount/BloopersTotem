@@ -1,0 +1,24 @@
+/*    */ package me.bloopers.blooptotem;
+/*    */ 
+/*    */ import org.bukkit.Bukkit;
+/*    */ import org.bukkit.Location;
+/*    */ import org.bukkit.Server;
+/*    */ import org.bukkit.World;
+/*    */ 
+/*    */ public class Utils
+/*    */ {
+/*    */   public static String locToString(Location l)
+/*    */   {
+/* 12 */     String ret = l.getWorld().getName() + "," + l.getBlockX() + "," + l.getBlockY() + "," + l.getBlockZ();
+/* 13 */     return ret;
+/*    */   }
+/*    */ 
+/*    */   public static Location stringToLoc(String s) {
+/* 17 */     String[] a = s.split(",");
+/* 18 */     World w = Bukkit.getServer().getWorld(a[0]);
+/* 19 */     float x = Float.parseFloat(a[1]);
+/* 20 */     float y = Float.parseFloat(a[2]);
+/* 21 */     float z = Float.parseFloat(a[3]);
+/* 22 */     return new Location(w, x, y, z);
+/*    */   }
+/*    */ }
