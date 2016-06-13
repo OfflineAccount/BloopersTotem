@@ -1,0 +1,80 @@
+/*    */ package me.bloopers.blooptotem;
+/*    */ 
+/*    */ import java.io.File;
+/*    */ import java.io.IOException;
+/*    */ import java.io.PrintStream;
+/*    */ import org.bukkit.Bukkit;
+/*    */ import org.bukkit.Location;
+/*    */ import org.bukkit.command.PluginCommand;
+/*    */ import org.bukkit.configuration.file.FileConfiguration;
+/*    */ import org.bukkit.configuration.file.YamlConfiguration;
+/*    */ import org.bukkit.plugin.PluginManager;
+/*    */ import org.bukkit.plugin.java.JavaPlugin;
+/*    */ import org.fusesource.jansi.Ansi;
+/*    */ import org.fusesource.jansi.Ansi.Color;
+/*    */ 
+/*    */ public class BloopersTotem extends JavaPlugin
+/*    */ {
+/*    */   private static BloopersTotem instance;
+/*    */   private static FileConfiguration config;
+/*    */   private static FileConfiguration stats;
+/*    */   private static File filestorage;
+/*    */   public static File filestats;
+/*    */ 
+/*    */   public void onEnable()
+/*    */   {
+/* 26 */     instance = this;
+/* 27 */     System.out.println(Ansi.ansi().fg(Ansi.Color.RED).boldOff().toString() + "===========");
+/* 28 */     System.out.println(Ansi.ansi().fg(Ansi.Color.BLUE).boldOff().toString() + "BloopersTotem: " + Ansi.ansi().fg(Ansi.Color.GREEN).boldOff().toString() + "ON");
+/* 29 */     System.out.println(Ansi.ansi().fg(Ansi.Color.BLUE).boldOff().toString() + "A plugin created by " + Ansi.ansi().fg(Ansi.Color.YELLOW).boldOff().toString() + "maxouland");
+/* 30 */     System.out.println(Ansi.ansi().fg(Ansi.Color.RED).boldOff().toString() + "===========");
+/* 31 */     Bukkit.getPluginCommand("totem").setExecutor(new TotemCmd());
+/* 32 */     Bukkit.getPluginManager().registerEvents(new BlockBreak(), getInstance());
+/* 33 */     createConfig();
+/* 34 */     Task.Initialize();
+/*    */   }
+/*    */   public void onDisable() {
+/* 37 */     instance = null;
+/* 38 */     Totem.destroy();
+/* 39 */     System.out.println(Ansi.ansi().fg(Ansi.Color.BLUE).boldOff().toString() + "BloopersTotem: " + Ansi.ansi().fg(Ansi.Color.RED).boldOff().toString() + "OFF");
+/*    */   }
+/*    */   public static BloopersTotem getInstance() {
+/* 42 */     return instance;
+/*    */   }
+/*    */   public static FileConfiguration getStats() {
+/* 45 */     return stats;
+/*    */   }
+/*    */   public void createConfig() {
+/* 48 */     filestorage = new File(getInstance().getDataFolder().getPath() + "/setpoint.yml");
+/* 49 */     filestats = new File(getInstance().getDataFolder().getPath() + "/stats.yml");
+/* 50 */     getInstance().getDataFolder().mkdirs();
+/* 51 */     if (!filestats.exists()) {
+/*    */       try {
+/* 53 */         filestats.createNewFile();
+/*    */       } catch (Exception e) {
+/* 55 */         e.printStackTrace();
+/*    */       }
+/*    */     }
+/* 58 */     if (!filestorage.exists()) {
+/*    */       try {
+/* 60 */         filestorage.createNewFile();
+/*    */       } catch (Exception e) {
+/* 62 */         e.printStackTrace();
+/*    */       }
+/*    */     }
+/* 65 */     config = YamlConfiguration.loadConfiguration(filestorage);
+/* 66 */     stats = YamlConfiguration.loadConfiguration(filestats);
+/* 67 */     if (config.contains("Location"))
+/* 68 */       Totem.location = Utils.stringToLoc(config.getString("Location"));
+/*    */   }
+/*    */ 
+/*    */   public static void setLocation(Location loc) {
+/* 72 */     Totem.location = loc;
+/* 73 */     config.set("Location", Utils.locToString(loc));
+/*    */     try {
+/* 75 */       config.save(filestorage);
+/*    */     } catch (IOException e) {
+/* 77 */       e.printStackTrace();
+/*    */     }
+/*    */   }
+/*    */ }
