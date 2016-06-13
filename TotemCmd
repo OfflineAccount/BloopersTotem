@@ -1,0 +1,82 @@
+/*    */ package me.bloopers.blooptotem;
+/*    */ 
+/*    */ import org.bukkit.Bukkit;
+/*    */ import org.bukkit.command.Command;
+/*    */ import org.bukkit.command.CommandExecutor;
+/*    */ import org.bukkit.command.CommandSender;
+/*    */ import org.bukkit.entity.Player;
+/*    */ import org.bukkit.event.Listener;
+/*    */ import org.bukkit.scheduler.BukkitScheduler;
+/*    */ 
+/*    */ public class TotemCmd
+/*    */   implements CommandExecutor, Listener
+/*    */ {
+/*    */   public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+/*    */   {
+/* 24 */     if (cmd.getName().equalsIgnoreCase("totem")) {
+/* 25 */       if (args.length == 0) {
+/* 26 */         sender.sendMessage("§c---");
+/* 27 */         sender.sendMessage("§bCommandes du totem:");
+/* 28 */         sender.sendMessage("§6Un plugin de maxouland - http://maxouland.fr");
+/* 29 */         sender.sendMessage(" ");
+/* 30 */         sender.sendMessage("§8/totem setpoint §6- §9Définit le point de spawn du totem");
+/* 31 */         sender.sendMessage("§8/totem create §6- §9Force la création du totem");
+/* 32 */         sender.sendMessage("§8/totem now §6- §9Crée le totem sans compte à rebours");
+/* 33 */         sender.sendMessage("§8/totem delete §6- §9Supprime et annule le totem en cours");
+/* 34 */         sender.sendMessage("§c---");
+/*    */       }
+/* 36 */       if (args.length == 1) {
+/* 37 */         if ("create".equalsIgnoreCase(args[0])) {
+/* 38 */           if (sender.hasPermission("blooperstotem.create")) {
+/* 39 */             if (!Totem.isCreated) {
+/* 40 */               sender.sendMessage("§5Création du totem...");
+/* 41 */               Bukkit.getScheduler().cancelTask(Task.a);
+/* 42 */               Task.startCountdown();
+/* 43 */               sender.sendMessage("§f[§cTOTEM§f] §aTotem crée avec succès!");
+/*    */             } else {
+/* 45 */               sender.sendMessage("§f[§cTOTEM§f] §cUn totem est déjà  crée");
+/*    */             }
+/*    */           }
+/* 48 */           else sender.sendMessage("§f[§cTOTEM§f] §cVous n'avez pas la permission pour exécuter cette commande");
+/*    */         }
+/* 50 */         else if ("setpoint".equalsIgnoreCase(args[0])) {
+/* 51 */           if (sender.hasPermission("blooperstotem.setpoint")) {
+/* 52 */             if ((sender instanceof Player)) {
+/* 53 */               Player p = (Player)sender;
+/* 54 */               BloopersTotem.setLocation(p.getLocation());
+/* 55 */               p.sendMessage("§f[§cTOTEM§f] §aLe spawn point du Totem a bien était définie");
+/*    */             } else {
+/* 57 */               sender.sendMessage("§f[§cTOTEM§f] §cVous devez etre connecté pour effectuer cette commande!");
+/*    */             }
+/*    */           }
+/* 60 */           else sender.sendMessage("§f[§cTOTEM§f] §cVous n'avez pas la permission pour exécuter cette commande");
+/*    */         }
+/* 62 */         else if ("delete".equalsIgnoreCase(args[0])) {
+/* 63 */           if (sender.hasPermission("blooperstotem.delete")) {
+/* 64 */             if (Totem.isCreated) {
+/* 65 */               Bukkit.broadcastMessage("§f[§cTOTEM§f] §cANNULATION DU TOTEM");
+/* 66 */               Totem.delete();
+/*    */             } else {
+/* 68 */               sender.sendMessage("§f[§cTOTEM§f] §cAucun totem en cours");
+/*    */             }
+/*    */           }
+/*    */ 
+/*    */         }
+/* 73 */         else if (("now".equalsIgnoreCase(args[0])) && 
+/* 74 */           (sender.hasPermission("blooperstotem.now"))) {
+/* 75 */           if (!Totem.isCreated) {
+/* 76 */             Bukkit.broadcastMessage("§f[§cTOTEM§f] §aLe totem vient d'apparaître !");
+/* 77 */             Totem.create();
+/* 78 */             sender.sendMessage("§f[§cTOTEM§f] §aTotem crée avec succès!");
+/*    */           } else {
+/* 80 */             sender.sendMessage("§f[§cTOTEM§f] §cUn totem est déjà  crée");
+/*    */           }
+/*    */         }
+/*    */ 
+/*    */       }
+/*    */ 
+/*    */     }
+/*    */ 
+/* 88 */     return false;
+/*    */   }
+/*    */ }
